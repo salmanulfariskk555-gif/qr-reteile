@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Feedback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #FBFBFC 0%, #F5EDE8 45%, #EE9C77 100%);
+      color: #121417;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header / Navbar */
+    header {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #111827;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    nav {
+      display: flex;
+      gap: 36px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #2b2f38;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    nav a:hover {
+      color: #E25B26;
+    }
+
+    .btn-contact {
+      border: 1px solid #111827;
+      background: transparent;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      color: #111827;
+      transition: all 0.2s ease;
+    }
+
+    .btn-contact:hover {
+      background: #111827;
+      color: #fff;
+    }
+
+    /* Hero Section */
+    .hero {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: #0E1116;
+      max-width: 900px;
+      margin-bottom: 24px;
+    }
+
+    /* Glass Container Feedback Card */
+    .feedback-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      padding: 40px 32px;
+      background: rgba(13, 15, 24, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      text-align: center;
+      color: #ffffff;
+      transition: all 0.3s ease;
+      margin-bottom: 40px;
+      overflow: hidden;
+      animation: reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Mood stripe — morphs color with rating */
+    .mood-stripe {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #E25B26, #EE9C77, #A2CFB6);
+      transition: background 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Icon Badge */
+    .icon-badge {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
+
+    p.subtitle {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Star Rating */
+    .stars-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .star {
+      background: none;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 4px;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .star svg {
+      width: 34px;
+      height: 34px;
+      fill: rgba(255, 255, 255, 0.15);
+      stroke: rgba(255, 255, 255, 0.3);
+      stroke-width: 1.5;
+      transition: all 0.2s ease;
+    }
+
+    .star:hover {
+      transform: scale(1.25);
+    }
+
+    .star.active svg,
+    .star.hovered svg {
+      fill: #fbbf24;
+      stroke: #f59e0b;
+      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+    }
+
+    .rating-ends {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+      margin-bottom: 20px;
+    }
+
+    .rating-ends span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .selected-display {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #fbbf24;
+      min-height: 24px;
+      margin-bottom: 4px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .selected-display.show {
+      opacity: 1;
+    }
+
+    /* Divider */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 22px auto;
+    }
+
+    /* ── 4-5 Star Customer Tag Selection & AI Review Flow ── */
+    .positive-flow-section {
+      display: none;
+      text-align: left;
+      animation: reveal 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .positive-flow-section.visible {
+      display: block;
+    }
+
+    .positive-flow-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .positive-flow-sub {
+      font-size: 0.84rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 14px;
+    }
+
+    .tag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .exp-tag {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.88);
+      padding: 9px 15px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .exp-tag:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.32);
+      transform: translateY(-1px);
+    }
+
+    .exp-tag.selected {
+      background: linear-gradient(135deg, #E25B26, #f59e0b);
+      border-color: #fde68a;
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(226, 91, 38, 0.4);
+      transform: scale(1.03);
+    }
+
+    .generate-ai-btn {
+      width: 100%;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #E25B26 0%, #f59e0b 100%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(226, 91, 38, 0.35);
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .generate-ai-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(226, 91, 38, 0.48);
+      filter: brightness(1.06);
+    }
+
+    .generate-ai-btn:disabled {
+      opacity: 0.65;
+      cursor: wait;
+      transform: none;
+    }
+
+    .review-output-box {
+      display: none;
+      margin-top: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(251, 191, 36, 0.35);
+      border-radius: 16px;
+      padding: 16px;
+      animation: reveal 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .review-output-box.visible {
+      display: block;
+    }
+
+    .review-textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #ffffff;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      min-height: 104px;
+      resize: vertical;
+      outline: none;
+      margin: 10px 0 14px;
+    }
+
+    .review-textarea:focus {
+      border-color: #fbbf24;
+    }
+
+    .copy-google-btn {
+      width: 100%;
+      padding: 15px 20px;
+      background: #ffffff;
+      color: #111827;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .copy-google-btn:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    /* ── Feedback form (ratings 1-3) ── */
+    .feedback-section {
+      display: none;
+      text-align: left;
+      animation: reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .feedback-section.visible {
+      display: block;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback-section .section-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    .feedback-section .section-sub {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 24px;
+    }
+
+    .field-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 6px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .custom-input,
+    .feedback-section input,
+    .feedback-section textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 18px;
+    }
+
+    .custom-input::placeholder,
+    .feedback-section input::placeholder,
+    .feedback-section textarea::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .custom-input:focus,
+    .feedback-section input:focus,
+    .feedback-section textarea:focus {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .feedback-section textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+      transition: all 0.25s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.45);
+      filter: brightness(1.1);
+    }
+
+    .submit-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.3);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ── Thank you ── */
+    .thank-you {
+      display: none;
+      text-align: center;
+      padding: 24px 0 12px;
+      animation: reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .thank-you.visible {
+      display: block;
+    }
+
+    .thank-you .check-mark {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .thank-you .check-mark svg {
+      width: 28px;
+      height: 28px;
+      stroke: #fbbf24;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .thank-you h2 {
+      font-weight: 800;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .thank-you p {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Interactive Showcase / Graphic Area */
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .workers-image-container {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .workers-img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 24px 24px 0 0;
+      display: block;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.12));
+    }
+
+    /* Side Cards / Badges */
+    .side-text-left {
+      position: absolute;
+      left: 0;
+      top: 22%;
+      max-width: 200px;
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #1F242D;
+      z-index: 2;
+    }
+
+    .satisfaction-badge {
+      position: absolute;
+      right: 15px;
+      top: 15%;
+      text-align: right;
+      z-index: 2;
+    }
+
+    .satisfaction-badge .percentage {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0E1116;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .satisfaction-badge .label {
+      font-size: 0.9rem;
+      color: #374151;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .avatar-group {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      margin-left: -8px;
+      object-fit: cover;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Discrete Hidden Admin Trigger in Bottom Corner */
+    .admin-secret-trigger {
+      position: fixed;
+      bottom: 10px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: rgba(17, 24, 39, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 50;
+      transition: all 0.2s ease;
+      font-size: 12px;
+    }
+
+    .admin-secret-trigger:hover {
+      color: rgba(17, 24, 39, 0.65);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* ── Admin Portal Modal (Hidden from Customer View) ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 12, 18, 0.72);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #12151f;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+      padding: 28px;
+      max-width: 780px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      position: relative;
+      animation: reveal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .preset-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.76rem;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .preset-pill:hover,
+    .preset-pill.active {
+      background: linear-gradient(135deg, #E25B26, #f59e0b);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Toast Notification */
+    .toast-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #111827;
+      color: #ffffff;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 880px) {
+      header {
+        padding: 20px;
+      }
+      nav {
+        display: none;
+      }
+      .side-text-left, .satisfaction-badge {
+        position: static;
+        margin: 16px auto;
+        text-align: center;
+      }
+      .avatar-group {
+        justify-content: center;
+      }
+      .hero-visual {
+        flex-direction: column;
+        align-items: center;
+      }
+      .feedback-card {
+        padding: 32px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Clean Customer-Facing Header (Matches Original feedback.html) -->
+  <header>
+    <a href="#" class="logo">
+      <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+        <path d="M16 2C9.5 2 4 7.5 4 14c0 8.5 12 16 12 16s12-7.5 12-16c0-6.5-5.5-12-12-12z" fill="#E25B26" opacity="0.15"/>
+        <path d="M16 4C10.5 4 6 8.5 6 14c0 7 10 13 10 13s10-6 10-13c0-5.5-4.5-10-10-10zm0 14a4 4 0 110-8 4 4 0 010 8z" fill="#E25B26"/>
+      </svg>
+      <span id="brandNameHeader">Dakshin Spice & Coolbar</span>
+    </a>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#service">Service</a>
+      <a href="#about">About</a>
+      <a href="#team">Team</a>
+    </nav>
+
+    <button class="btn-contact" id="contactBtn">Contact</button>
+  </header>
+
+  <!-- Hero Main Content (Pure Customer Rating View) -->
+  <main class="hero">
+    <h1 class="hero-title" id="heroHeadline">How was your experience?</h1>
+
+    <!-- Feedback Interactive Card -->
+    <div class="feedback-card">
+      <div class="mood-stripe" id="moodStripe"></div>
+
+      <div class="icon-badge">✨</div>
+      <p class="subtitle" style="margin-bottom: 20px;">Tap a star to leave a quick rating or share your feedback with us.</p>
+
+      <!-- 1-5 Star Selector -->
+      <div class="stars-wrapper" id="stars-container">
+        <button class="star" data-rating="1" aria-label="1 star">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+        <button class="star" data-rating="2" aria-label="2 stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+        <button class="star" data-rating="3" aria-label="3 stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+        <button class="star" data-rating="4" aria-label="4 stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+        <button class="star" data-rating="5" aria-label="5 stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
+      </div>
+
+      <div class="rating-ends">
+        <span>Disappointed</span>
+        <span>Loved it</span>
+      </div>
+
+      <div class="selected-display" id="selectedDisplay"></div>
+
+      <!-- 4–5 STARS: CUSTOMER TAG BUTTONS & AI GOOGLE REVIEW GENERATOR -->
+      <div class="positive-flow-section" id="positiveFlowSection">
+        <div class="divider"></div>
+        <p class="positive-flow-title">What did you love most?</p>
+        <p class="positive-flow-sub">Tap a few highlights and we'll write a quick review for you:</p>
+
+        <!-- Clickable Tag Pills (Good Service, Good Quality, Good Food, Good Rasam, etc.) -->
+        <div class="tag-grid" id="experienceTagsContainer"></div>
+
+        <!-- Generate Review Button -->
+        <button type="button" class="generate-ai-btn" id="generateReviewBtn">
+          <span id="generateBtnIcon">✨</span>
+          <span id="generateBtnText">Generate My Review</span>
+        </button>
+
+        <!-- AI Generated Review Output & 1-Tap Google Redirect -->
+        <div class="review-output-box" id="reviewOutputBox">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-300">
+              Your Personalized Review
+            </span>
+            <button
+              type="button"
+              id="regenerateBtn"
+              class="text-xs font-semibold text-white/70 hover:text-white underline cursor-pointer"
+            >
+              ↻ Rewrite
+            </button>
+          </div>
+
+          <textarea
+            id="generatedReviewTextarea"
+            class="review-textarea"
+            aria-label="Your Google Review"
+          ></textarea>
+
+          <button type="button" class="copy-google-btn" id="copyAndPostGoogleBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            <span id="copyBtnLabel">Copy Review & Post on Google</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 1–3 STARS: PRIVATE FEEDBACK FORM (Preserved from original feedback.html) -->
+      <div class="feedback-section" id="feedbackSection">
+        <div class="divider"></div>
+        <p class="section-title">We'd love to hear more</p>
+        <p class="section-sub">This stays between us — it helps us get better.</p>
+
+        <label class="field-label" for="nameInput">Name <span style="font-weight:400;text-transform:none">(optional)</span></label>
+        <input type="text" id="nameInput" placeholder="Your name">
+
+        <label class="field-label" for="emailInput">Email <span style="font-weight:400;text-transform:none">(optional)</span></label>
+        <input type="email" id="emailInput" placeholder="you@example.com">
+
+        <label class="field-label" for="feedbackText">What could we do better?</label>
+        <textarea id="feedbackText" placeholder="Tell us what happened..."></textarea>
+
+        <button class="submit-btn" id="submitBtn">Send Feedback</button>
+      </div>
+
+      <!-- Thank-you State -->
+      <div class="thank-you" id="thankYou">
+        <div class="check-mark">
+          <svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg>
+        </div>
+        <h2>Thank you</h2>
+        <p>Your feedback helps us serve you better.</p>
+      </div>
+    </div>
+
+    <!-- Visual Area -->
+    <div class="hero-visual">
+      <!-- Left Side Copy -->
+      <div class="side-text-left" id="sideTaglineLeft">
+        Authentic South Indian<br>
+        Meals, Signature Rasam<br>
+        & Fresh Coolbar Drinks<br>
+        Served With Warmth
+      </div>
+
+      <!-- Center Photo -->
+      <div class="workers-image-container">
+        <img 
+          id="heroShowcaseImg"
+          src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80" 
+          alt="Team and Store Ambience" 
+          class="workers-img"
+          onerror="this.src='https://placehold.co/1200x500/1f242d/ffffff?text=Welcome'"
+        />
+      </div>
+
+      <!-- Right Side Satisfaction Badge -->
+      <div class="satisfaction-badge">
+        <div class="percentage">100%</div>
+        <div class="label">Satisfaction</div>
+        <div class="avatar-group">
+          <img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="Client Avatar 1">
+          <img class="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Client Avatar 2">
+          <img class="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="Client Avatar 3">
+          <img class="avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Client Avatar 4">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Discrete Admin Lock Icon (Bottom-Right Corner - invisible to normal customers, opens Admin Portal) -->
+  <button
+    type="button"
+    id="secretAdminBtn"
+    class="admin-secret-trigger"
+    title="Store Admin Setup (?admin=1)"
+    aria-label="Admin Settings"
+  >
+    🔒
+  </button>
+
+  <!-- ========================================================================== -->
+  <!-- HIDDEN ADMIN & STORE SETUP PORTAL (Only shown via ?admin=1 or lock icon)   -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="adminPortalModal">
+    <div class="modal-box">
+      <div class="flex items-center justify-between pb-4 mb-5 border-b border-white/15">
+        <div>
+          <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Admin Setup Portal (Hidden from Customers)</span>
+          <h3 class="text-xl font-extrabold text-white">Store, SEO Keywords, n8n Webhooks & QR Studio</h3>
+        </div>
+        <button id="closeAdminModalBtn" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-lg">✕</button>
+      </div>
+
+      <!-- Quick Demo Industry Presets (For fast switching during your meeting) -->
+      <div class="mb-5 bg-white/5 p-3.5 rounded-xl border border-white/10">
+        <div class="text-xs font-bold uppercase tracking-wider text-white/60 mb-2">
+          Quick Load Industry Template:
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="preset-pill active" data-preset="restaurant">🍛 Restaurant / Rasam & Coolbar</button>
+          <button type="button" class="preset-pill" data-preset="fashion">👔 Menswear / Retail Apparel</button>
+          <button type="button" class="preset-pill" data-preset="electronics">📱 Electronics & Mobile Hub</button>
+          <button type="button" class="preset-pill" data-preset="plumbing">🔧 Sutherland Plumbing LLC</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        <!-- Left Config Form -->
+        <div class="md:col-span-7 space-y-3 text-left">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="field-label">Store / Business Name</label>
+              <input type="text" id="cfgStoreName" class="custom-input !mb-0" placeholder="e.g., Dakshin Spice & Coolbar" />
+            </div>
+            <div>
+              <label class="field-label">City / Location (For Local SEO)</label>
+              <input type="text" id="cfgStoreCity" class="custom-input !mb-0" placeholder="e.g., MG Road, Kochi" />
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label">Industry Category</label>
+            <input type="text" id="cfgStoreType" class="custom-input !mb-0" placeholder="e.g., South Indian Restaurant & Coolbar" />
+          </div>
+
+          <div>
+            <label class="field-label">Customer Clickable Buttons (Comma Separated)</label>
+            <input type="text" id="cfgStoreTags" class="custom-input !mb-0" placeholder="Good Rasam, Good Food, Good Service, Good Quality" />
+          </div>
+
+          <div>
+            <label class="field-label">Target Google SEO Keywords (Injected by AI)</label>
+            <input type="text" id="cfgSeoKeywords" class="custom-input !mb-0" placeholder="best rasam in town, authentic meals, fresh juice coolbar" />
+          </div>
+
+          <div>
+            <label class="field-label">Google Review Redirect URL</label>
+            <input type="url" id="cfgGoogleUrl" class="custom-input !mb-0" placeholder="https://share.google/..." />
+          </div>
+
+          <!-- Backend Automation / n8n Webhook Configuration -->
+          <div class="p-3.5 rounded-xl bg-black/30 border border-white/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">n8n Automation Webhooks</span>
+              <button type="button" id="testWebhookBtn" class="text-xs px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-white font-semibold transition">
+                ⚡ Test n8n Webhook
+              </button>
+            </div>
+
+            <div>
+              <label class="field-label">1–3 Star Negative Feedback n8n Webhook URL</label>
+              <input type="url" id="cfgNegativeWebhookUrl" class="custom-input !mb-0" placeholder="http://localhost:5678/webhook/372c8fa0-5ca2-451a-9a5d-aad15656acf3" />
+            </div>
+
+            <div>
+              <label class="field-label">4–5 Star AI Review / Analytics n8n Webhook URL (Optional)</label>
+              <input type="url" id="cfgPositiveWebhookUrl" class="custom-input !mb-0" placeholder="http://localhost:5678/webhook/372c8fa0-5ca2-451a-9a5d-aad15656acf3" />
+            </div>
+          </div>
+
+          <div class="pt-2 flex flex-wrap gap-2">
+            <button type="button" id="saveAndExitAdminBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 text-white font-bold text-sm shadow-lg hover:brightness-110 transition">
+              Save & Switch to Customer View
+            </button>
+            <button type="button" id="copyCustomerLinkBtn" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/15 transition">
+              🔗 Copy Pure Customer Link
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Printable Customer QR Code Standee -->
+        <div class="md:col-span-5 bg-white text-slate-900 rounded-2xl p-5 text-center shadow-2xl border-4 border-amber-400/80">
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-600 mb-1">CUSTOMER TABLETOP QR</div>
+          <h4 class="font-extrabold text-base text-slate-900 line-clamp-1 mb-0.5" id="qrCardStoreTitle">Dakshin Spice & Coolbar</h4>
+          <p class="text-xs text-slate-500 mb-3" id="qrCardStoreCity">MG Road, Kochi</p>
+
+          <div class="bg-slate-50 p-3 rounded-xl inline-block border border-slate-200 mb-3">
+            <img
+              id="qrCodeImage"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com"
+              alt="Customer QR Code"
+              class="w-40 h-40 mx-auto rounded-lg"
+            />
+          </div>
+
+          <div class="flex justify-center gap-1 text-amber-400 text-sm mb-1">★★★★★</div>
+          <p class="text-[11px] font-semibold text-slate-600">
+            Scanning this QR opens the <strong>pure customer rating view</strong> for this shop.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-banner" id="toastBanner">
+    <span>✅</span>
+    <span id="toastMessage">Copied! Opening Google Reviews...</span>
+  </div>
+
+  <script>
+    // ============================================================================
+    // 1. STORE CONFIGURATION & INDUSTRY TEMPLATES
+    // ============================================================================
+    const DEFAULT_WEBHOOK_URL = 'http://localhost:5678/webhook/372c8fa0-5ca2-451a-9a5d-aad15656acf3';
+    const DEFAULT_GOOGLE_URL = 'https://share.google/b0ShD4ZRfBJn3vc6D';
+
+    const INDUSTRY_PRESETS = {
+      restaurant: {
+        name: 'Dakshin Spice & Coolbar',
+        city: 'MG Road, Kochi',
+        type: 'South Indian Restaurant & Coolbar',
+        sideCopy: 'Authentic South Indian\nMeals, Signature Rasam\n& Fresh Coolbar Drinks\nServed With Warmth',
+        heroImg: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+        tags: [
+          'Good Rasam',
+          'Good Food',
+          'Good Service',
+          'Good Quality',
+          'Fresh Juices',
+          'Clean & Hygienic',
+          'Great Ambience',
+          'Value for Money'
+        ],
+        seoKeywords: [
+          'best South Indian restaurant',
+          'authentic pepper rasam',
+          'fresh juice coolbar',
+          'hygienic family dining'
+        ],
+        googleUrl: DEFAULT_GOOGLE_URL,
+        negativeWebhookUrl: DEFAULT_WEBHOOK_URL,
+        positiveWebhookUrl: DEFAULT_WEBHOOK_URL
+      },
+      fashion: {
+        name: 'OGGI Menswear Studio',
+        city: 'Edappally, Kochi',
+        type: 'Menswear & Retail Apparel Store',
+        sideCopy: 'Premium Fabrics,\nSharp Tailored Fits &\nTrendsetting Menswear\nFor Every Occasion',
+        heroImg: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80',
+        tags: [
+          'Good Service',
+          'Good Quality',
+          'Great Fit & Sizing',
+          'Trendy Collection',
+          'Helpful Staff',
+          'Value for Money',
+          'Premium Fabric'
+        ],
+        seoKeywords: [
+          'best menswear store',
+          'premium quality shirts',
+          'trendy men fashion collection',
+          'helpful retail staff'
+        ],
+        googleUrl: DEFAULT_GOOGLE_URL,
+        negativeWebhookUrl: DEFAULT_WEBHOOK_URL,
+        positiveWebhookUrl: DEFAULT_WEBHOOK_URL
+      },
+      electronics: {
+        name: 'Apex Digital & Mobile Hub',
+        city: 'Indiranagar, Bengaluru',
+        type: 'Electronics & Smartphone Store',
+        sideCopy: 'Genuine Gadgets,\nInstant Setup Support\n& Unbeatable Exchange\nDeals Every Day',
+        heroImg: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=80',
+        tags: [
+          'Good Service',
+          'Good Quality',
+          'Expert Demo & Setup',
+          'Best Price & Deals',
+          'Polite Staff',
+          'Genuine Warranty'
+        ],
+        seoKeywords: [
+          'best mobile showroom',
+          'genuine electronics store',
+          'great customer service',
+          'best smartphone deals'
+        ],
+        googleUrl: DEFAULT_GOOGLE_URL,
+        negativeWebhookUrl: DEFAULT_WEBHOOK_URL,
+        positiveWebhookUrl: DEFAULT_WEBHOOK_URL
+      },
+      plumbing: {
+        name: 'Sutherland Plumbing LLC',
+        city: 'Local Service Area',
+        type: 'Professional Plumbing Service',
+        sideCopy: 'Your Plumbing Issues\nAre Our Priority, Fixed\nWith Precision And\nCare Every Time',
+        heroImg: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1200&q=80',
+        tags: [
+          'Good Service',
+          'Good Quality',
+          'On-Time Arrival',
+          'Leak Fixed Fast',
+          'Clean & Neat Work',
+          'Fair Pricing',
+          'Professional Team'
+        ],
+        seoKeywords: [
+          'reliable plumbing service',
+          'professional plumbers',
+          'fast leak repair',
+          'honest plumbing pricing'
+        ],
+        googleUrl: DEFAULT_GOOGLE_URL,
+        negativeWebhookUrl: DEFAULT_WEBHOOK_URL,
+        positiveWebhookUrl: DEFAULT_WEBHOOK_URL
+      }
+    };
+
+    const STRIPE_COLORS = [
+      '',
+      'linear-gradient(90deg, #E25B26, #E25B26)',
+      'linear-gradient(90deg, #E25B26, #EE9C77)',
+      'linear-gradient(90deg, #EE9C77, #F5EDE8)',
+      'linear-gradient(90deg, #F5EDE8, #A2CFB6)',
+      'linear-gradient(90deg, #A2CFB6, #4EA875)',
+    ];
+
+    const ratingLabels = [
+      '',
+      'Very disappointed',
+      'Not great',
+      'Neutral',
+      'Really happy',
+      'Absolutely loved it'
+    ];
+
+    let activePresetKey = 'restaurant';
+    let activeStore = JSON.parse(JSON.stringify(INDUSTRY_PRESETS.restaurant));
+    let currentRating = -1;
+    let selectedTags = new Set();
+
+    // DOM Elements
+    const stars = document.querySelectorAll('.star');
+    const selectedDisplay = document.getElementById('selectedDisplay');
+    const positiveFlowSection = document.getElementById('positiveFlowSection');
+    const feedbackSection = document.getElementById('feedbackSection');
+    const thankYou = document.getElementById('thankYou');
+    const moodStripe = document.getElementById('moodStripe');
+    const experienceTagsContainer = document.getElementById('experienceTagsContainer');
+    const reviewOutputBox = document.getElementById('reviewOutputBox');
+    const generatedReviewTextarea = document.getElementById('generatedReviewTextarea');
+    const adminPortalModal = document.getElementById('adminPortalModal');
+
+    // ============================================================================
+    // 2. INITIALIZATION (Reads URL params or localStorage for Pure Customer View)
+    // ============================================================================
+    function initApp() {
+      // Load saved admin config if present
+      const savedConfig = localStorage.getItem('qr_seo_store_config');
+      if (savedConfig) {
+        try {
+          activeStore = { ...activeStore, ...JSON.parse(savedConfig) };
+        } catch (_) {}
+      }
+
+      // Override with QR URL query parameters if scanned from a store QR code
+      const params = new URLSearchParams(window.location.search);
+      const presetParam = params.get('store');
+      if (presetParam && INDUSTRY_PRESETS[presetParam]) {
+        activePresetKey = presetParam;
+        activeStore = JSON.parse(JSON.stringify(INDUSTRY_PRESETS[presetParam]));
+      }
+      if (params.get('name')) activeStore.name = params.get('name');
+      if (params.get('city')) activeStore.city = params.get('city');
+      if (params.get('type')) activeStore.type = params.get('type');
+      if (params.get('tags')) {
+        activeStore.tags = params.get('tags').split(',').map(t => t.trim()).filter(Boolean);
+      }
+      if (params.get('seo')) {
+        activeStore.seoKeywords = params.get('seo').split(',').map(k => k.trim()).filter(Boolean);
+      }
+      if (params.get('google')) activeStore.googleUrl = params.get('google');
+
+      renderCustomerStoreUI();
+      syncAdminModalInputs();
+
+      // Open Admin Portal ONLY if ?admin=1 or #admin is in the URL
+      if (params.get('admin') === '1' || window.location.hash === '#admin') {
+        openAdminModal();
+      }
+    }
+
+    function renderCustomerStoreUI() {
+      document.title = `${activeStore.name} — Feedback`;
+      document.getElementById('brandNameHeader').textContent = activeStore.name;
+      document.getElementById('sideTaglineLeft').innerHTML = (activeStore.sideCopy || '').replace(/\n/g, '<br>');
+      document.getElementById('heroShowcaseImg').src = activeStore.heroImg;
+
+      // Default pre-select first 2 tags so customer can generate in 1 tap if they want
+      selectedTags = new Set(activeStore.tags.slice(0, 2));
+      renderExperienceTags();
+    }
+
+    function renderExperienceTags() {
+      experienceTagsContainer.innerHTML = '';
+      activeStore.tags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `exp-tag ${selectedTags.has(tag) ? 'selected' : ''}`;
+        btn.textContent = tag;
+        btn.addEventListener('click', () => {
+          if (selectedTags.has(tag)) {
+            selectedTags.delete(tag);
+          } else {
+            selectedTags.add(tag);
+          }
+          btn.classList.toggle('selected', selectedTags.has(tag));
+        });
+        experienceTagsContainer.appendChild(btn);
+      });
+    }
+
+    // ============================================================================
+    // 3. CUSTOMER STAR RATING INTERACTION
+    // ============================================================================
+    stars.forEach(star => {
+      star.addEventListener('mouseenter', () => {
+        const rating = parseInt(star.getAttribute('data-rating'));
+        highlightStars(rating, 'hovered');
+        selectedDisplay.textContent = ratingLabels[rating];
+        selectedDisplay.classList.add('show');
+      });
+
+      star.addEventListener('mouseleave', () => {
+        clearHighlights('hovered');
+        if (currentRating > 0) {
+          selectedDisplay.textContent = ratingLabels[currentRating];
+          highlightStars(currentRating, 'active');
+        } else {
+          selectedDisplay.textContent = '';
+          selectedDisplay.classList.remove('show');
+        }
+      });
+
+      star.addEventListener('click', () => {
+        const rating = parseInt(star.getAttribute('data-rating'));
+        currentRating = rating;
+        highlightStars(rating, 'active');
+        selectedDisplay.textContent = ratingLabels[rating];
+        selectedDisplay.classList.add('show');
+
+        // Mood stripe morph
+        moodStripe.style.background = STRIPE_COLORS[rating];
+
+        positiveFlowSection.classList.remove('visible');
+        feedbackSection.classList.remove('visible');
+        thankYou.classList.remove('visible');
+
+        if (rating >= 4) {
+          // 4-5 Stars: Reveal clickable experience tags & AI review generator
+          setTimeout(() => {
+            positiveFlowSection.classList.add('visible');
+            positiveFlowSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 250);
+        } else {
+          // 1-3 Stars: Reveal private feedback shield
+          setTimeout(() => {
+            feedbackSection.classList.add('visible');
+            feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 250);
+        }
+      });
+    });
+
+    function highlightStars(count, className) {
+      stars.forEach(s => {
+        const idx = parseInt(s.getAttribute('data-rating'));
+        s.classList.toggle(className, idx <= count);
+      });
+    }
+
+    function clearHighlights(className) {
+      stars.forEach(s => s.classList.remove(className));
+    }
+
+    // ============================================================================
+    // 4. CUSTOMER AI SEO GOOGLE REVIEW GENERATION (Background n8n + Gemini + Fallback)
+    // ============================================================================
+    function buildInstantSEOReview() {
+      const tagsList = Array.from(selectedTags);
+      const seoPrimary = activeStore.seoKeywords[0] || activeStore.type;
+      const seoSecondary = activeStore.seoKeywords[1] || 'great service';
+
+      const tagPhrase = tagsList.length > 0
+        ? tagsList.join(', ').replace(/, ([^,]*)$/, ' and $1').toLowerCase()
+        : 'great service and quality';
+
+      return `Had a wonderful ${currentRating}-star experience at ${activeStore.name} in ${activeStore.city}! Truly impressed by the ${tagPhrase}. If you are looking for ${seoPrimary} and ${seoSecondary}, this is definitely the spot to visit. Highly recommended!`;
+    }
+
+    async function callGeminiAPI(promptText, systemText) {
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{ parts: [{ text: promptText }] }],
+        systemInstruction: { parts: [{ text: systemText }] }
+      };
+
+      const delays = [1000, 2000];
+      for (let attempt = 0; attempt <= delays.length; attempt++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const result = await response.json();
+          const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) return text.trim();
+          throw new Error('Empty response');
+        } catch (err) {
+          if (attempt === delays.length) throw err;
+          await new Promise(r => setTimeout(r, delays[attempt]));
+        }
+      }
+    }
+
+    async function generateCustomerReview() {
+      const btn = document.getElementById('generateReviewBtn');
+      const btnIcon = document.getElementById('generateBtnIcon');
+      const btnText = document.getElementById('generateBtnText');
+      const tagsArray = Array.from(selectedTags);
+
+      btn.disabled = true;
+      btnIcon.textContent = '⏳';
+      btnText.textContent = 'Writing your review...';
+
+      // 1. Silently trigger positive n8n webhook in the background
+      let webhookReview = null;
+      if (activeStore.positiveWebhookUrl) {
+        try {
+          const res = await fetch(activeStore.positiveWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event: 'positive_review_generated',
+              storeName: activeStore.name,
+              city: activeStore.city,
+              industry: activeStore.type,
+              rating: currentRating,
+              selectedTags: tagsArray,
+              seoKeywords: activeStore.seoKeywords
+            })
+          });
+          if (res.ok) {
+            const data = await res.json().catch(() => null);
+            if (data && (data.reviewText || data.review || data.output)) {
+              webhookReview = data.reviewText || data.review || data.output;
+            }
+          }
+        } catch (_) {
+          // Silently ignore if local n8n webhook is not running
+        }
+      }
+
+      if (webhookReview) {
+        generatedReviewTextarea.value = webhookReview;
+        reviewOutputBox.classList.add('visible');
+        btn.disabled = false;
+        btnIcon.textContent = '✨';
+        btnText.textContent = 'Generate My Review';
+        return;
+      }
+
+      // 2. Generate via Gemini AI with natural Local SEO keywords
+      const systemPrompt = `Write a genuine, natural-sounding ${currentRating}-star Google Review for a customer visiting ${activeStore.name} in ${activeStore.city}.
+Naturally include the highlights the customer clicked (${tagsArray.join(', ') || 'Good Service, Good Quality'}) and 1-2 local SEO phrases (${activeStore.seoKeywords.join(', ')}).
+Keep it between 2 and 3 sentences, warm and human. Output ONLY the review text without quotes.`;
+
+      const userPrompt = `Store: ${activeStore.name} (${activeStore.city})
+Clicked Highlights: ${tagsArray.join(', ') || 'Good Service, Good Quality'}`;
+
+      try {
+        const aiText = await callGeminiAPI(userPrompt, systemPrompt);
+        generatedReviewTextarea.value = aiText.replace(/^["']|["']$/g, '');
+      } catch (_) {
+        generatedReviewTextarea.value = buildInstantSEOReview();
+      } finally {
+        reviewOutputBox.classList.add('visible');
+        btn.disabled = false;
+        btnIcon.textContent = '✨';
+        btnText.textContent = 'Generate My Review';
+      }
+    }
+
+    document.getElementById('generateReviewBtn').addEventListener('click', generateCustomerReview);
+    document.getElementById('regenerateBtn').addEventListener('click', generateCustomerReview);
+
+    // Copy Review & Redirect to Google
+    function copyTextToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+      }
+      return Promise.resolve(fallbackCopy(text));
+    }
+
+    function fallbackCopy(text) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.style.position = 'fixed';
+      temp.style.opacity = '0';
+      document.body.appendChild(temp);
+      temp.focus();
+      temp.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      document.body.removeChild(temp);
+    }
+
+    document.getElementById('copyAndPostGoogleBtn').addEventListener('click', async () => {
+      const reviewText = generatedReviewTextarea.value.trim();
+      await copyTextToClipboard(reviewText);
+
+      const copyBtnLabel = document.getElementById('copyBtnLabel');
+      copyBtnLabel.textContent = '✅ Copied! Opening Google...';
+      showToast('Review copied! Paste it on Google Reviews →');
+
+      setTimeout(() => {
+        window.open(activeStore.googleUrl || DEFAULT_GOOGLE_URL, '_blank', 'noopener,noreferrer');
+        copyBtnLabel.textContent = 'Copy Review & Post on Google';
+      }, 850);
+    });
+
+    // ============================================================================
+    // 5. 1–3 STAR NEGATIVE FEEDBACK WEBHOOK (Background n8n Trigger)
+    // ============================================================================
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      const text = document.getElementById('feedbackText').value.trim();
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      fetch(activeStore.negativeWebhookUrl || DEFAULT_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'negative_feedback',
+          storeName: activeStore.name,
+          city: activeStore.city,
+          rating: currentRating,
+          name,
+          email,
+          feedback: text
+        })
+      })
+      .then(() => {
+        feedbackSection.classList.remove('visible');
+        thankYou.classList.add('visible');
+      })
+      .catch(() => {
+        feedbackSection.classList.remove('visible');
+        thankYou.classList.add('visible');
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Send Feedback';
+      });
+    });
+
+    // Contact button
+    document.getElementById('contactBtn').addEventListener('click', () => {
+      showToast(`Thank you for visiting ${activeStore.name}!`);
+    });
+
+    // ============================================================================
+    // 6. HIDDEN ADMIN PORTAL LOGIC (Accessible via ?admin=1 or Discrete Lock Icon)
+    // ============================================================================
+    function syncAdminModalInputs() {
+      document.getElementById('cfgStoreName').value = activeStore.name;
+      document.getElementById('cfgStoreCity').value = activeStore.city;
+      document.getElementById('cfgStoreType').value = activeStore.type;
+      document.getElementById('cfgStoreTags').value = activeStore.tags.join(', ');
+      document.getElementById('cfgSeoKeywords').value = activeStore.seoKeywords.join(', ');
+      document.getElementById('cfgGoogleUrl').value = activeStore.googleUrl || DEFAULT_GOOGLE_URL;
+      document.getElementById('cfgNegativeWebhookUrl').value = activeStore.negativeWebhookUrl || DEFAULT_WEBHOOK_URL;
+      document.getElementById('cfgPositiveWebhookUrl').value = activeStore.positiveWebhookUrl || DEFAULT_WEBHOOK_URL;
+      updateAdminQrPreview();
+    }
+
+    function buildCleanCustomerUrl() {
+      const base = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams();
+      params.set('name', activeStore.name);
+      params.set('city', activeStore.city);
+      params.set('type', activeStore.type);
+      params.set('tags', activeStore.tags.join(','));
+      params.set('seo', activeStore.seoKeywords.join(','));
+      return `${base}?${params.toString()}`;
+    }
+
+    function updateAdminQrPreview() {
+      document.getElementById('qrCardStoreTitle').textContent = activeStore.name;
+      document.getElementById('qrCardStoreCity').textContent = `${activeStore.city} • ${activeStore.type}`;
+      const cleanCustomerUrl = buildCleanCustomerUrl();
+      document.getElementById('qrCodeImage').src =
+        `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(cleanCustomerUrl)}`;
+    }
+
+    function openAdminModal() {
+      syncAdminModalInputs();
+      adminPortalModal.classList.add('visible');
+    }
+
+    function closeAdminModal() {
+      adminPortalModal.classList.remove('visible');
+    }
+
+    document.getElementById('secretAdminBtn').addEventListener('click', openAdminModal);
+    document.getElementById('closeAdminModalBtn').addEventListener('click', closeAdminModal);
+    adminPortalModal.addEventListener('click', e => {
+      if (e.target === adminPortalModal) closeAdminModal();
+    });
+
+    // Preset template loader inside Admin Modal
+    document.querySelectorAll('.preset-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.preset;
+        if (INDUSTRY_PRESETS[key]) {
+          activePresetKey = key;
+          activeStore = JSON.parse(JSON.stringify(INDUSTRY_PRESETS[key]));
+          document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          syncAdminModalInputs();
+          renderCustomerStoreUI();
+        }
+      });
+    });
+
+    // Save Admin Settings & Switch to Pure Customer View
+    document.getElementById('saveAndExitAdminBtn').addEventListener('click', () => {
+      activeStore.name = document.getElementById('cfgStoreName').value.trim() || 'Dakshin Spice & Coolbar';
+      activeStore.city = document.getElementById('cfgStoreCity').value.trim() || 'MG Road, Kochi';
+      activeStore.type = document.getElementById('cfgStoreType').value.trim() || 'Retail Store';
+      activeStore.tags = document.getElementById('cfgStoreTags').value.split(',').map(s => s.trim()).filter(Boolean);
+      activeStore.seoKeywords = document.getElementById('cfgSeoKeywords').value.split(',').map(s => s.trim()).filter(Boolean);
+      activeStore.googleUrl = document.getElementById('cfgGoogleUrl').value.trim() || DEFAULT_GOOGLE_URL;
+      activeStore.negativeWebhookUrl = document.getElementById('cfgNegativeWebhookUrl').value.trim() || DEFAULT_WEBHOOK_URL;
+      activeStore.positiveWebhookUrl = document.getElementById('cfgPositiveWebhookUrl').value.trim() || DEFAULT_WEBHOOK_URL;
+
+      localStorage.setItem('qr_seo_store_config', JSON.stringify(activeStore));
+      renderCustomerStoreUI();
+      updateAdminQrPreview();
+      closeAdminModal();
+      showToast('Store settings saved! Showing pure customer view.');
+    });
+
+    // Copy pure customer link
+    document.getElementById('copyCustomerLinkBtn').addEventListener('click', async () => {
+      const url = buildCleanCustomerUrl();
+      await copyTextToClipboard(url);
+      showToast('Customer QR link copied to clipboard!');
+    });
+
+    // Test n8n Webhook Button (Admin only)
+    document.getElementById('testWebhookBtn').addEventListener('click', async () => {
+      const testUrl = document.getElementById('cfgNegativeWebhookUrl').value.trim() || DEFAULT_WEBHOOK_URL;
+      showToast('Sending test payload to n8n webhook...');
+      try {
+        await fetch(testUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'admin_webhook_test',
+            storeName: activeStore.name,
+            rating: 5,
+            selectedTags: activeStore.tags.slice(0, 3)
+          })
+        });
+        showToast('n8n Webhook triggered! Check your n8n workflow.');
+      } catch (_) {
+        showToast('Sent request to webhook (verify localhost:5678 CORS/status).');
+      }
+    });
+
+    // Toast notification helper
+    let toastTimer;
+    function showToast(message) {
+      const banner = document.getElementById('toastBanner');
+      document.getElementById('toastMessage').textContent = message;
+      banner.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => banner.classList.remove('show'), 3200);
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
